@@ -1,0 +1,23 @@
+{
+  "@context": {
+    "schema": "https://schema.org/",
+    "prov": "http://www.w3.org/ns/prov#",
+    "kb": "https://example.com/vocab/kb#",
+
+    "id": "@id",
+    "type": "@type",
+
+    "confidence": {
+      "@id": "kb:confidence",
+      "@type": "http://www.w3.org/2001/XMLSchema#decimal"
+    },
+    "source": {
+      "@id": "prov:wasDerivedFrom",
+      "@type": "@id"
+    },
+    "relatedTo": {
+      "@id": "kb:relatedTo",
+      "@type": "@id"
+    }
+  }
+}

@@ -1,0 +1,37 @@
+@prefix schema: <https://schema.org/> .
+@prefix kb: <https://example.com/vocab/kb#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://example.com/2026/04/what-is-a-knowledge-graph/> a schema:Article ;
+  schema:name "What is a Knowledge Graph?" ;
+  schema:datePublished "2026-04-01"^^xsd:date ;
+  schema:keywords "knowledge-graphs, rdf, linked-data" ;
+  schema:mentions <https://example.com/id/sparql> ;
+  schema:mentions <https://example.com/id/rdf> ;
+  schema:mentions <https://example.com/id/json-ld> .
+
+<https://example.com/2026/04/building-with-dotnetrdf/> a schema:Article ;
+  schema:name "Building with dotNetRDF" ;
+  schema:datePublished "2026-04-10"^^xsd:date ;
+  schema:keywords "dotnet, rdf, sparql" ;
+  schema:mentions <https://example.com/id/dotnetrdf> ;
+  schema:mentions <https://example.com/id/sparql> ;
+  schema:author <https://example.com/id/luis-quintanilla> .
+
+<https://example.com/id/sparql> a schema:Thing ;
+  schema:name "SPARQL" ;
+  schema:sameAs <https://www.wikidata.org/entity/Q54872> .
+
+<https://example.com/id/rdf> a schema:Thing ;
+  schema:name "RDF" ;
+  schema:sameAs <https://www.wikidata.org/entity/Q54872> .
+
+<https://example.com/id/json-ld> a schema:Thing ;
+  schema:name "JSON-LD" ;
+  schema:sameAs <https://www.wikidata.org/entity/Q6108942> .
+
+<https://example.com/id/dotnetrdf> a schema:SoftwareApplication ;
+  schema:name "dotNetRDF" .
+
+<https://example.com/id/luis-quintanilla> a schema:Person ;
+  schema:name "Luis Quintanilla" .

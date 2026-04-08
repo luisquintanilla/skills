@@ -1,0 +1,6 @@
+{
+  "name": "dotnet-knowledge-graph",
+  "version": "0.1.0",
+  "description": "Build and query knowledge graphs from markdown repositories. Copilot CLI extracts entities and relations as JSON-LD linked data, then answers questions by reading the graph files directly. Optional SPARQL execution via dotNetRDF for large graphs that exceed context limits.",
+  "skills": ["./skills/"]
+}

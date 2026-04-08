@@ -1,0 +1,41 @@
+scenarios:
+  - name: "List entities in a knowledge graph"
+    prompt: "What entities are in the knowledge graph under tests/dotnet-knowledge-graph/query-local-kg/graph/?"
+    setup:
+      copy_test_files: true
+    assertions:
+      - type: "output_contains"
+        value: "SPARQL"
+      - type: "output_contains"
+        value: "dotNetRDF"
+    rubric:
+      - "The agent identified entities from the graph files"
+      - "The agent listed entity names and types"
+      - "The agent did not invent entities not present in the graph"
+    timeout: 120
+
+  - name: "Find articles mentioning a specific entity"
+    prompt: "Which articles in tests/dotnet-knowledge-graph/query-local-kg/graph/ mention SPARQL?"
+    setup:
+      copy_test_files: true
+    assertions:
+      - type: "output_contains"
+        value: "Knowledge Graph"
+      - type: "output_contains"
+        value: "dotNetRDF"
+    rubric:
+      - "The agent correctly identified both articles that mention SPARQL"
+      - "The agent presented article titles from the graph data"
+    timeout: 120
+
+  - name: "Find entities by type"
+    prompt: "Find all people mentioned in the knowledge graph at tests/dotnet-knowledge-graph/query-local-kg/graph/"
+    setup:
+      copy_test_files: true
+    assertions:
+      - type: "output_contains"
+        value: "Luis Quintanilla"
+    rubric:
+      - "The agent found the Person entity"
+      - "The agent correctly identified schema:Person as the type filter"
+    timeout: 120
