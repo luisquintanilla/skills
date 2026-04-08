@@ -1,41 +1,47 @@
 scenarios:
-  - name: "List entities in a knowledge graph"
-    prompt: "What entities are in the knowledge graph under tests/dotnet-knowledge-graph/query-local-kg/graph/?"
+  - name: "Discover skills for a migration task"
+    prompt: "I need to migrate my xUnit v2 tests to the latest version. Based on the knowledge graph in graph/ directory, what skills should I use and in what order? Explain the migration workflow."
     setup:
       copy_test_files: true
     assertions:
       - type: "output_contains"
-        value: "SPARQL"
+        value: "migrate-xunit-to-xunit-v3"
       - type: "output_contains"
-        value: "dotNetRDF"
+        value: "migrate-vstest-to-mtp"
     rubric:
-      - "The agent identified entities from the graph files"
-      - "The agent listed entity names and types"
-      - "The agent did not invent entities not present in the graph"
+      - "Identified migrate-xunit-to-xunit-v3 as the primary skill for xUnit v2 to v3 migration"
+      - "Recommended migrate-vstest-to-mtp as a follow-up step for test runner platform migration"
+      - "Presented the skills in a logical sequential order — xUnit package migration first, then test runner platform migration"
     timeout: 120
 
-  - name: "Find articles mentioning a specific entity"
-    prompt: "Which articles in tests/dotnet-knowledge-graph/query-local-kg/graph/ mention SPARQL?"
+  - name: "Trace a diagnostic workflow from agent to skills"
+    prompt: "My .NET build takes forever. Based on the knowledge graph in graph/ directory, what is the build performance diagnostic workflow? Start from the msbuild agent and trace all related skills and their downstream chains."
     setup:
       copy_test_files: true
     assertions:
       - type: "output_contains"
-        value: "Knowledge Graph"
+        value: "build-perf-diagnostics"
       - type: "output_contains"
-        value: "dotNetRDF"
+        value: "build-parallelism"
+      - type: "output_contains"
+        value: "incremental-build"
     rubric:
-      - "The agent correctly identified both articles that mention SPARQL"
-      - "The agent presented article titles from the graph data"
+      - "Found the msbuild agent and identified the skills it works with: build-perf-diagnostics, binlog-failure-analysis, incremental-build, msbuild-antipatterns"
+      - "Traced the build performance chain showing that build-perf-diagnostics leads to build-parallelism, incremental-build, and eval-performance as downstream optimization strategies"
+      - "Recommended starting with build-perf-baseline before diagnostics and presented a logical workflow order from measurement through analysis to targeted fixes"
     timeout: 120
 
-  - name: "Find entities by type"
-    prompt: "Find all people mentioned in the knowledge graph at tests/dotnet-knowledge-graph/query-local-kg/graph/"
+  - name: "Cross-plugin technology coverage analysis"
+    prompt: "Which testing technologies in the knowledge graph (graph/ directory) have skill coverage across multiple plugins? For each, list which plugins contain skills mentioning that technology and what migration paths exist."
     setup:
       copy_test_files: true
     assertions:
       - type: "output_contains"
-        value: "Luis Quintanilla"
+        value: "MSTest"
+      - type: "output_contains"
+        value: "dotnet-ai"
     rubric:
-      - "The agent found the Person entity"
-      - "The agent correctly identified schema:Person as the type filter"
+      - "Identified MSTest as a testing technology with skill coverage in both the dotnet-test and dotnet-ai plugins"
+      - "Traced the MSTest migration path: migrate-mstest-v1v2-to-v3 leads to migrate-mstest-v3-to-v4"
+      - "Clearly distinguished technologies with single-plugin coverage from those spanning multiple plugins"
     timeout: 120

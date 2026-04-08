@@ -1,37 +1,395 @@
 @prefix schema: <https://schema.org/> .
-@prefix kb: <https://example.com/vocab/kb#> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix kb:     <urn:dotnet-skills:vocab:> .
+@prefix p:      <urn:dotnet-skills:plugin:> .
+@prefix sk:     <urn:dotnet-skills:skill:> .
+@prefix t:      <urn:dotnet-skills:tech:> .
+@prefix ag:     <urn:dotnet-skills:agent:> .
+@prefix org:    <urn:dotnet-skills:org:> .
+@prefix xsd:    <http://www.w3.org/2001/XMLSchema#> .
 
-<https://example.com/2026/04/what-is-a-knowledge-graph/> a schema:Article ;
-  schema:name "What is a Knowledge Graph?" ;
-  schema:datePublished "2026-04-01"^^xsd:date ;
-  schema:keywords "knowledge-graphs, rdf, linked-data" ;
-  schema:mentions <https://example.com/id/sparql> ;
-  schema:mentions <https://example.com/id/rdf> ;
-  schema:mentions <https://example.com/id/json-ld> .
+# ===== Plugins =====
 
-<https://example.com/2026/04/building-with-dotnetrdf/> a schema:Article ;
-  schema:name "Building with dotNetRDF" ;
-  schema:datePublished "2026-04-10"^^xsd:date ;
-  schema:keywords "dotnet, rdf, sparql" ;
-  schema:mentions <https://example.com/id/dotnetrdf> ;
-  schema:mentions <https://example.com/id/sparql> ;
-  schema:author <https://example.com/id/luis-quintanilla> .
+p:dotnet-test a kb:Plugin ;
+  schema:name "dotnet-test" ;
+  schema:description "Test execution, filtering, MSTest workflows, and migration" ;
+  schema:hasPart sk:run-tests ,
+                 sk:writing-mstest-tests ,
+                 sk:migrate-xunit-to-xunit-v3 ,
+                 sk:migrate-vstest-to-mtp ,
+                 sk:migrate-mstest-v3-to-v4 ,
+                 sk:migrate-mstest-v1v2-to-v3 ,
+                 sk:coverage-analysis ,
+                 sk:code-testing-agent ,
+                 sk:mtp-hot-reload .
 
-<https://example.com/id/sparql> a schema:Thing ;
-  schema:name "SPARQL" ;
-  schema:sameAs <https://www.wikidata.org/entity/Q54872> .
+p:dotnet-msbuild a kb:Plugin ;
+  schema:name "dotnet-msbuild" ;
+  schema:description "Build skills: diagnosis, performance, and modernization" ;
+  schema:hasPart sk:build-perf-diagnostics ,
+                 sk:binlog-failure-analysis ,
+                 sk:build-parallelism ,
+                 sk:incremental-build ,
+                 sk:msbuild-modernization ,
+                 sk:msbuild-antipatterns ,
+                 sk:eval-performance ,
+                 sk:build-perf-baseline .
 
-<https://example.com/id/rdf> a schema:Thing ;
-  schema:name "RDF" ;
-  schema:sameAs <https://www.wikidata.org/entity/Q54872> .
+p:dotnet-ai a kb:Plugin ;
+  schema:name "dotnet-ai" ;
+  schema:description "AI/ML: LLM integration, RAG, MCP, and classic ML with ML.NET" ;
+  schema:hasPart sk:technology-selection ,
+                 sk:mcp-csharp-create ,
+                 sk:mcp-csharp-debug ,
+                 sk:mcp-csharp-publish ,
+                 sk:mcp-csharp-test .
 
-<https://example.com/id/json-ld> a schema:Thing ;
-  schema:name "JSON-LD" ;
-  schema:sameAs <https://www.wikidata.org/entity/Q6108942> .
+p:dotnet-diag a kb:Plugin ;
+  schema:name "dotnet-diag" ;
+  schema:description "Performance investigations, debugging, and incident analysis" ;
+  schema:hasPart sk:microbenchmarking ,
+                 sk:analyzing-dotnet-performance ,
+                 sk:dotnet-trace-collect ,
+                 sk:dump-collect .
 
-<https://example.com/id/dotnetrdf> a schema:SoftwareApplication ;
-  schema:name "dotNetRDF" .
+p:dotnet-upgrade a kb:Plugin ;
+  schema:name "dotnet-upgrade" ;
+  schema:description ".NET framework and version migration" ;
+  schema:hasPart sk:migrate-dotnet9-to-dotnet10 ,
+                 sk:migrate-dotnet10-to-dotnet11 ,
+                 sk:dotnet-aot-compat .
 
-<https://example.com/id/luis-quintanilla> a schema:Person ;
-  schema:name "Luis Quintanilla" .
+# ===== Skills (dotnet-test) =====
+
+sk:run-tests a schema:Article ;
+  schema:name "run-tests" ;
+  schema:description "Execute .NET tests with dotnet test, filter syntax, VSTest vs MTP, TUnit support" ;
+  schema:isPartOf p:dotnet-test ;
+  schema:mentions t:mstest , t:xunit , t:nunit , t:tunit , t:vstest , t:mtp .
+
+sk:writing-mstest-tests a schema:Article ;
+  schema:name "writing-mstest-tests" ;
+  schema:description "MSTest 3.x/4.x best practices, assertions, data-driven tests" ;
+  schema:isPartOf p:dotnet-test ;
+  schema:mentions t:mstest .
+
+sk:migrate-xunit-to-xunit-v3 a schema:Article ;
+  schema:name "migrate-xunit-to-xunit-v3" ;
+  schema:description "xUnit v2 to v3 migration: packages, assertions, parallelism changes" ;
+  schema:isPartOf p:dotnet-test ;
+  schema:mentions t:xunit , t:mtp ;
+  kb:relatedTo sk:migrate-vstest-to-mtp .
+
+sk:migrate-vstest-to-mtp a schema:Article ;
+  schema:name "migrate-vstest-to-mtp" ;
+  schema:description "VSTest to Microsoft.Testing.Platform migration" ;
+  schema:isPartOf p:dotnet-test ;
+  schema:mentions t:vstest , t:mtp , t:mstest , t:xunit .
+
+sk:migrate-mstest-v3-to-v4 a schema:Article ;
+  schema:name "migrate-mstest-v3-to-v4" ;
+  schema:description "MSTest v3 to v4 breaking changes and behavioral changes" ;
+  schema:isPartOf p:dotnet-test ;
+  schema:mentions t:mstest .
+
+sk:migrate-mstest-v1v2-to-v3 a schema:Article ;
+  schema:name "migrate-mstest-v1v2-to-v3" ;
+  schema:description "Legacy MSTest v1/v2 to v3 migration" ;
+  schema:isPartOf p:dotnet-test ;
+  schema:mentions t:mstest ;
+  kb:relatedTo sk:migrate-mstest-v3-to-v4 .
+
+sk:coverage-analysis a schema:Article ;
+  schema:name "coverage-analysis" ;
+  schema:description "Project-wide coverage with CRAP scoring and risk prioritization" ;
+  schema:isPartOf p:dotnet-test ;
+  schema:mentions t:coverlet , t:reportgenerator , t:mstest .
+
+sk:code-testing-agent a schema:Article ;
+  schema:name "code-testing-agent" ;
+  schema:description "Multi-agent test generation pipeline with RPI (Research-Plan-Implement)" ;
+  schema:isPartOf p:dotnet-test ;
+  schema:mentions t:mstest , t:xunit , t:nunit , t:ef-core .
+
+sk:mtp-hot-reload a schema:Article ;
+  schema:name "mtp-hot-reload" ;
+  schema:description "MTP hot reload for rapid test iteration without rebuilds" ;
+  schema:isPartOf p:dotnet-test ;
+  schema:mentions t:mtp .
+
+# ===== Skills (dotnet-msbuild) =====
+
+sk:build-perf-baseline a schema:Article ;
+  schema:name "build-perf-baseline" ;
+  schema:description "Cold/warm/no-op measurements before optimization" ;
+  schema:isPartOf p:dotnet-msbuild ;
+  schema:mentions t:msbuild ;
+  kb:relatedTo sk:build-perf-diagnostics .
+
+sk:build-perf-diagnostics a schema:Article ;
+  schema:name "build-perf-diagnostics" ;
+  schema:description "Binlog analysis: identify bottlenecks, RAR, analyzers, node utilization" ;
+  schema:isPartOf p:dotnet-msbuild ;
+  schema:mentions t:msbuild , t:binlog ;
+  kb:relatedTo sk:build-parallelism ,
+               sk:incremental-build ,
+               sk:eval-performance .
+
+sk:binlog-failure-analysis a schema:Article ;
+  schema:name "binlog-failure-analysis" ;
+  schema:description "Convert binlogs to searchable text logs for error diagnosis" ;
+  schema:isPartOf p:dotnet-msbuild ;
+  schema:mentions t:msbuild , t:binlog .
+
+sk:build-parallelism a schema:Article ;
+  schema:name "build-parallelism" ;
+  schema:description "MaxCpuCount, graph build mode, dependency scheduling optimization" ;
+  schema:isPartOf p:dotnet-msbuild ;
+  schema:mentions t:msbuild .
+
+sk:incremental-build a schema:Article ;
+  schema:name "incremental-build" ;
+  schema:description "Inputs/Outputs, up-to-date checks, 8 common failure causes" ;
+  schema:isPartOf p:dotnet-msbuild ;
+  schema:mentions t:msbuild .
+
+sk:msbuild-modernization a schema:Article ;
+  schema:name "msbuild-modernization" ;
+  schema:description "Legacy to SDK-style project migration" ;
+  schema:isPartOf p:dotnet-msbuild ;
+  schema:mentions t:msbuild , t:dotnet-upgrade-assistant ;
+  kb:relatedTo sk:msbuild-antipatterns .
+
+sk:msbuild-antipatterns a schema:Article ;
+  schema:name "msbuild-antipatterns" ;
+  schema:description "20+ anti-patterns: Exec misuse, hardcoded paths, etc." ;
+  schema:isPartOf p:dotnet-msbuild ;
+  schema:mentions t:msbuild .
+
+sk:eval-performance a schema:Article ;
+  schema:name "eval-performance" ;
+  schema:description "Glob patterns, import chains, property function optimization" ;
+  schema:isPartOf p:dotnet-msbuild ;
+  schema:mentions t:msbuild .
+
+# ===== Skills (dotnet-ai) =====
+
+sk:technology-selection a schema:Article ;
+  schema:name "technology-selection" ;
+  schema:description "Decision tree: ML.NET for tabular data, MEAI for LLM, MAF for agents, ONNX for inference" ;
+  schema:isPartOf p:dotnet-ai ;
+  schema:mentions t:ml-net , t:meai , t:onnx-runtime , t:ollamasharp , t:mcp .
+
+sk:mcp-csharp-create a schema:Article ;
+  schema:name "mcp-csharp-create" ;
+  schema:description "Create MCP servers with stdio and HTTP transport in C#" ;
+  schema:isPartOf p:dotnet-ai ;
+  schema:mentions t:mcp , t:aspnet-core ;
+  kb:relatedTo sk:mcp-csharp-test .
+
+sk:mcp-csharp-debug a schema:Article ;
+  schema:name "mcp-csharp-debug" ;
+  schema:description "Run, debug, MCP Inspector, GitHub Copilot Agent Mode" ;
+  schema:isPartOf p:dotnet-ai ;
+  schema:mentions t:mcp .
+
+sk:mcp-csharp-publish a schema:Article ;
+  schema:name "mcp-csharp-publish" ;
+  schema:description "Deploy MCP servers: NuGet, Docker, Azure, MCP Registry" ;
+  schema:isPartOf p:dotnet-ai ;
+  schema:mentions t:mcp , t:docker , t:nuget .
+
+sk:mcp-csharp-test a schema:Article ;
+  schema:name "mcp-csharp-test" ;
+  schema:description "Unit and integration tests for MCP servers" ;
+  schema:isPartOf p:dotnet-ai ;
+  schema:mentions t:mcp , t:mstest .
+
+# ===== Skills (dotnet-diag) =====
+
+sk:microbenchmarking a schema:Article ;
+  schema:name "microbenchmarking" ;
+  schema:description "BenchmarkDotNet: design, configuration, comparative analysis" ;
+  schema:isPartOf p:dotnet-diag ;
+  schema:mentions t:benchmarkdotnet .
+
+sk:analyzing-dotnet-performance a schema:Article ;
+  schema:name "analyzing-dotnet-performance" ;
+  schema:description "~50 performance anti-patterns: async, memory, collections, LINQ, I/O" ;
+  schema:isPartOf p:dotnet-diag ;
+  schema:mentions t:benchmarkdotnet , t:ef-core .
+
+sk:dotnet-trace-collect a schema:Article ;
+  schema:name "dotnet-trace-collect" ;
+  schema:description "Diagnostic tools selection and data collection: PerfView, dotnet-trace" ;
+  schema:isPartOf p:dotnet-diag ;
+  schema:mentions t:perfview , t:dotnet-trace .
+
+sk:dump-collect a schema:Article ;
+  schema:name "dump-collect" ;
+  schema:description "Crash dumps: CoreCLR/NativeAOT, Linux/macOS/Windows, containers" ;
+  schema:isPartOf p:dotnet-diag ;
+  schema:mentions t:dotnet-dump .
+
+# ===== Skills (dotnet-upgrade) =====
+
+sk:migrate-dotnet9-to-dotnet10 a schema:Article ;
+  schema:name "migrate-dotnet9-to-dotnet10" ;
+  schema:description ".NET 9 to 10: obsoletion warnings, cryptography renames, C# 14" ;
+  schema:isPartOf p:dotnet-upgrade ;
+  kb:relatedTo sk:migrate-dotnet10-to-dotnet11 .
+
+sk:migrate-dotnet10-to-dotnet11 a schema:Article ;
+  schema:name "migrate-dotnet10-to-dotnet11" ;
+  schema:description ".NET 10 to 11 (preview): hardware requirements, breaking changes, C# 15" ;
+  schema:isPartOf p:dotnet-upgrade .
+
+sk:dotnet-aot-compat a schema:Article ;
+  schema:name "dotnet-aot-compat" ;
+  schema:description "IL trim/AOT warnings: DynamicallyAccessedMembers, IsAotCompatible" ;
+  schema:isPartOf p:dotnet-upgrade .
+
+# ===== Agents =====
+
+ag:code-testing-generator a kb:Agent ;
+  schema:name "code-testing-generator" ;
+  schema:description "Orchestrates RPI (Research-Plan-Implement) test generation pipeline" ;
+  schema:isPartOf p:dotnet-test ;
+  kb:relatedTo sk:code-testing-agent ,
+               sk:writing-mstest-tests ,
+               sk:run-tests .
+
+ag:msbuild a kb:Agent ;
+  schema:name "msbuild" ;
+  schema:description "MSBuild troubleshooting, performance, and project files" ;
+  schema:isPartOf p:dotnet-msbuild ;
+  kb:relatedTo sk:binlog-failure-analysis ,
+               sk:build-perf-diagnostics ,
+               sk:incremental-build ,
+               sk:msbuild-antipatterns .
+
+ag:optimizing-dotnet-performance a kb:Agent ;
+  schema:name "optimizing-dotnet-performance" ;
+  schema:description "Performance bottleneck analysis and benchmarking guidance" ;
+  schema:isPartOf p:dotnet-diag ;
+  kb:relatedTo sk:analyzing-dotnet-performance ,
+               sk:microbenchmarking .
+
+# ===== Technologies =====
+
+t:mstest a schema:SoftwareApplication ;
+  schema:name "MSTest" ;
+  schema:description "Microsoft testing framework (v1, v2, v3, v4)" ;
+  schema:creator org:microsoft .
+
+t:xunit a schema:SoftwareApplication ;
+  schema:name "xUnit.net" ;
+  schema:description "Community testing framework (v2, v3)" .
+
+t:nunit a schema:SoftwareApplication ;
+  schema:name "NUnit" ;
+  schema:description "Ported testing framework from JUnit" .
+
+t:tunit a schema:SoftwareApplication ;
+  schema:name "TUnit" ;
+  schema:description "Microsoft.Testing.Platform-only test framework" .
+
+t:vstest a schema:SoftwareApplication ;
+  schema:name "VSTest" ;
+  schema:description "Legacy Visual Studio test platform" ;
+  schema:creator org:microsoft .
+
+t:mtp a schema:SoftwareApplication ;
+  schema:name "Microsoft.Testing.Platform" ;
+  schema:description "Next-gen test runner replacing VSTest" ;
+  schema:creator org:microsoft ;
+  kb:relatedTo t:vstest .
+
+t:msbuild a schema:SoftwareApplication ;
+  schema:name "MSBuild" ;
+  schema:description "Microsoft Build Engine for .NET projects" ;
+  schema:creator org:microsoft .
+
+t:binlog a schema:SoftwareApplication ;
+  schema:name "Binary Log (binlog)" ;
+  schema:description "MSBuild binary log format for build analysis" ;
+  kb:relatedTo t:msbuild .
+
+t:mcp a schema:SoftwareApplication ;
+  schema:name "Model Context Protocol (MCP)" ;
+  schema:description "Protocol for LLM tool integration" .
+
+t:meai a schema:SoftwareApplication ;
+  schema:name "Microsoft.Extensions.AI" ;
+  schema:description "IChatClient interface for LLM integration" ;
+  schema:creator org:microsoft .
+
+t:ml-net a schema:SoftwareApplication ;
+  schema:name "ML.NET" ;
+  schema:description "Machine learning framework for structured data" ;
+  schema:creator org:microsoft .
+
+t:onnx-runtime a schema:SoftwareApplication ;
+  schema:name "ONNX Runtime" ;
+  schema:description "Cross-platform ML inference engine" ;
+  schema:creator org:microsoft .
+
+t:ollamasharp a schema:SoftwareApplication ;
+  schema:name "OllamaSharp" ;
+  schema:description "Local LLM inference client" .
+
+t:benchmarkdotnet a schema:SoftwareApplication ;
+  schema:name "BenchmarkDotNet" ;
+  schema:description "Microbenchmarking framework for .NET" .
+
+t:ef-core a schema:SoftwareApplication ;
+  schema:name "Entity Framework Core" ;
+  schema:description "Object-relational mapper for .NET" ;
+  schema:creator org:microsoft .
+
+t:coverlet a schema:SoftwareApplication ;
+  schema:name "Coverlet" ;
+  schema:description "Cross-platform code coverage library" .
+
+t:reportgenerator a schema:SoftwareApplication ;
+  schema:name "ReportGenerator" ;
+  schema:description "Code coverage report generation tool" .
+
+t:perfview a schema:SoftwareApplication ;
+  schema:name "PerfView" ;
+  schema:description "ETW trace collection and analysis (Windows)" ;
+  schema:creator org:microsoft .
+
+t:dotnet-trace a schema:SoftwareApplication ;
+  schema:name "dotnet-trace" ;
+  schema:description "EventPipe tracing tool (cross-platform)" ;
+  schema:creator org:microsoft .
+
+t:dotnet-dump a schema:SoftwareApplication ;
+  schema:name "dotnet-dump" ;
+  schema:description "Dump collection and analysis tool" ;
+  schema:creator org:microsoft .
+
+t:aspnet-core a schema:SoftwareApplication ;
+  schema:name "ASP.NET Core" ;
+  schema:description "Web framework for .NET" ;
+  schema:creator org:microsoft .
+
+t:docker a schema:SoftwareApplication ;
+  schema:name "Docker" ;
+  schema:description "Container platform" .
+
+t:nuget a schema:SoftwareApplication ;
+  schema:name "NuGet" ;
+  schema:description ".NET package manager" ;
+  schema:creator org:microsoft .
+
+t:dotnet-upgrade-assistant a schema:SoftwareApplication ;
+  schema:name "dotnet-upgrade-assistant" ;
+  schema:description "Tool for modernizing .NET projects" ;
+  schema:creator org:microsoft .
+
+# ===== Organizations =====
+
+org:microsoft a schema:Organization ;
+  schema:name "Microsoft" ;
+  schema:sameAs <https://www.wikidata.org/entity/Q2283> .

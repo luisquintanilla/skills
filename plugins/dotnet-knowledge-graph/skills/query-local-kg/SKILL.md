@@ -1,213 +1,120 @@
 ---
 name: query-local-kg
 description: >
-  Query a local RDF knowledge graph built from markdown content. Copilot CLI reads
-  JSON-LD or Turtle graph files directly and answers questions about entities,
-  relations, and articles — no SPARQL endpoint needed. For large graphs that exceed
-  context limits, optionally generate and execute SPARQL queries via a dotNetRDF
-  file-based app. USE FOR: answering questions about entities, relations, and content
-  in a local knowledge graph; exploring what a knowledge graph contains; finding
-  connections between articles and entities. DO NOT USE FOR: building or extracting
-  a knowledge graph from markdown (use build-markdown-kg instead); querying remote
-  SPARQL endpoints; general-purpose RDF/OWL ontology engineering.
+  Query a local RDF knowledge graph (Turtle .ttl or JSON-LD .jsonld files).
+  Read graph files, understand RDF triples and relationships (types, mentions,
+  authorship), and answer questions about entities, articles, and connections.
+  USE FOR: answering questions about entities, relationships, or content in a
+  local knowledge graph; exploring graph contents; finding connections between
+  articles and entities; understanding Turtle or JSON-LD graph files.
+  DO NOT USE FOR: building a knowledge graph (use build-markdown-kg); querying
+  remote SPARQL endpoints.
 ---
 
 # Query a Local Knowledge Graph
 
-Answer questions about a knowledge graph built from markdown content. The graph
-consists of JSON-LD and/or Turtle files committed to the repository, typically
-under a `graph/` directory.
+Answer questions about a knowledge graph consisting of RDF files (Turtle `.ttl`
+or JSON-LD `.jsonld`) committed to the repository.
 
 ## When to Use
 
-- User asks questions about entities, topics, or relationships in their content
-- User wants to explore what their knowledge graph contains
-- User wants to find connections between articles and entities
-- Graph files (`.jsonld`, `.ttl`) exist in the repository
+- User asks about entities, topics, or relationships in their knowledge graph
+- User wants to explore what a knowledge graph contains
+- Graph files (`.ttl`, `.jsonld`) exist in the repository
 
 ## When Not to Use
 
-- No graph files exist yet (use `build-markdown-kg` to create them first)
+- No graph files exist yet → use `build-markdown-kg` first
 - User wants to build/extract a knowledge graph from markdown
-- User needs to query a remote SPARQL endpoint or external triple store
-
-## Inputs
-
-| Input | Required | Description |
-|-------|----------|-------------|
-| Graph directory | Yes | Path to directory containing `.jsonld` or `.ttl` files (e.g., `graph/articles/`) |
-| Ontology/schema | No | Path to `context.jsonld` or vocabulary files; defaults to schema.org conventions |
-| User question | Yes | Natural language question about the knowledge graph |
 
 ## Workflow
 
-### Step 1: Locate the graph files
+### Step 1: Read the graph files
 
-Find JSON-LD or Turtle files in the repository:
+Read the Turtle or JSON-LD files with `view`. They are typically under a
+`graph/` directory.
 
+**How to read Turtle (`.ttl`):**
+
+Turtle encodes RDF triples — `subject predicate object` statements. Semicolons
+continue with the same subject:
+
+```turtle
+<https://example.com/article-1/> a schema:Article ;     # this resource IS an Article
+  schema:name "My Article" ;                             # it HAS name "My Article"
+  schema:mentions <https://example.com/id/sparql> .      # it MENTIONS the entity sparql
 ```
-graph/
-  articles/
-    *.jsonld          # Per-article JSON-LD
-    *.ttl             # Per-article Turtle
-  views/
-    entities.json     # Optional precomputed views
-```
 
-Check the graph size to choose the right query approach:
-- **Small graph** (total files < ~100KB): Read files directly with `view` — proceed to Step 2a
-- **Large graph** (total files > ~100KB): Generate and execute SPARQL — proceed to Step 2b
+**How to read JSON-LD (`.jsonld`):**
 
-### Step 2a: Direct read (small graphs)
-
-Read the JSON-LD or Turtle files directly. JSON-LD files are valid JSON and
-easy to process:
+JSON-LD files contain an `@graph` array of nodes:
 
 ```json
 {
-  "@context": "../../ontology/context.jsonld",
   "@graph": [
-    { "id": "https://example.com/article-slug/", "type": "schema:Article", "schema:name": "Article Title" },
-    { "id": "https://example.com/id/some-entity", "type": "schema:SoftwareApplication", "schema:name": "Some Entity" }
+    { "id": "...", "type": "schema:Article", "schema:name": "My Article",
+      "schema:mentions": ["https://example.com/id/sparql"] },
+    { "id": "...", "type": "schema:Thing", "schema:name": "SPARQL" }
   ]
 }
 ```
 
-Scan the `@graph` arrays across files to answer the user's question. Look for:
-- **Entities**: Objects with `type` other than `schema:Article`
-- **Articles**: Objects with `type` of `schema:Article`
-- **Mentions**: `schema:mentions` links from articles to entities
-- **Relations**: `schema:about`, `schema:author`, `schema:creator`, `kb:relatedTo`
-- **External links**: `schema:sameAs` pointing to Wikidata or other URIs
+**Key vocabulary** (schema.org + custom `kb:` namespace):
 
-Present results conversationally. Include entity types and counts where helpful.
+| Predicate | Meaning |
+|-----------|---------|
+| `a` / `type` | RDF type — Article, Person, Organization, SoftwareApplication, Thing |
+| `schema:name` | Display name or title |
+| `schema:mentions` | An article mentions this entity |
+| `schema:about` | An article's primary topic |
+| `schema:hasPart` | A container includes this item (plugin → skill, collection → member) |
+| `schema:isPartOf` | This item belongs to a container (skill → plugin) |
+| `schema:author` | Who wrote the article |
+| `schema:creator` | Who created a technology or entity |
+| `schema:datePublished` | Publication date |
+| `schema:sameAs` | Link to external identifier (e.g., Wikidata) |
+| `schema:keywords` | Comma-separated tags |
+| `kb:relatedTo` | Generic relationship between entities (chains, alternatives, prerequisites) |
 
-**Checkpoint:** Results presented and user question answered.
+### Step 2: Answer the question
 
-### Step 2b: SPARQL execution (large graphs)
+Interpret the RDF triples to answer the user's question. All resources in the
+graph — articles, people, software, organizations, and other entities — are
+first-class nodes that can be listed, filtered, and connected.
 
-When the graph is too large to read into context, generate a SPARQL query and
-execute it using a .NET 10 file-based app with dotNetRDF.
+Common patterns:
 
-#### Generate SPARQL
+- **"What's in the graph?"** → List all resources with their types and names
+- **"Which articles mention X?"** → Follow `schema:mentions` links from articles
+  to find those referencing entity X by name
+- **"Find all people"** → Filter resources by their RDF type (`a schema:Person`)
+- **"What topics appear across articles?"** → Collect `schema:mentions` targets
+  and find which entities are mentioned by multiple articles
+- **"Who authored articles about X?"** → Follow `schema:author` from articles
+  that `schema:mentions` entity X
+- **"What skills should I use for task X?"** → Find resources that `schema:mentions`
+  the relevant technology, check `schema:isPartOf` for their container, then follow
+  `kb:relatedTo` for workflow chains and prerequisites
+- **"How is X connected to Y?"** → Trace chains: entity → `kb:relatedTo` → entity →
+  `schema:hasPart` → member → `schema:mentions` → technology
 
-Use the schema reference below to generate valid SPARQL. The knowledge graph
-uses schema.org vocabulary with a custom `kb:` namespace.
+Present findings conversationally with specific data from the graph.
 
-**Available prefixes:**
-```sparql
-PREFIX schema: <https://schema.org/>
-PREFIX kb:     <https://example.com/vocab/kb#>
-PREFIX prov:   <http://www.w3.org/ns/prov#>
-PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
-```
+### Step 3: For large graphs — use SPARQL
 
-**Available classes:**
-- `schema:Article` — A markdown article/entry
-- `schema:Person` — A person mentioned in content
-- `schema:Organization` — An organization
-- `schema:SoftwareApplication` — A software tool or framework
-- `schema:CreativeWork` — A creative work or publication
-- `schema:Thing` — Generic fallback entity type
-
-**Available properties:**
-- `schema:name` — Label/title of any entity or article (`xsd:string`)
-- `schema:mentions` — Article mentions an entity (`Article → Thing`)
-- `schema:about` — Article is about a topic (`Article → Thing`)
-- `schema:author` — Author of an article (`Article → Person`)
-- `schema:creator` — Creator of a thing (`Thing → Person/Org`)
-- `schema:datePublished` — Publication date (`Article → xsd:date`)
-- `schema:sameAs` — Link to external URI (e.g., Wikidata)
-- `schema:keywords` — Comma-separated tags (`Article → xsd:string`)
-- `schema:description` — Summary text (`Article → xsd:string`)
-- `kb:relatedTo` — Fallback relation (`Thing → Thing`)
-- `kb:confidence` — Extraction confidence 0..1 (`xsd:decimal`)
-
-**Query generation rules:**
-1. Only use classes and properties listed above — do not invent predicates
-2. Only generate `SELECT` or `ASK` queries — never `INSERT`, `DELETE`, or `UPDATE`
-3. Include a `LIMIT` clause (default 100) unless the user asks for all results
-4. Match entity names case-insensitively: `FILTER(CONTAINS(LCASE(STR(?name)), "search term"))`
-5. Articles are typed `schema:Article`; entities are `schema:Thing` or a subtype
-
-**Common patterns:**
-
-Find all entities:
-```sparql
-PREFIX schema: <https://schema.org/>
-SELECT DISTINCT ?entity ?name ?type WHERE {
-  ?entity a ?type ; schema:name ?name .
-  FILTER(?type != schema:Article)
-} LIMIT 100
-```
-
-Find articles mentioning an entity:
-```sparql
-PREFIX schema: <https://schema.org/>
-SELECT ?article ?title WHERE {
-  ?article a schema:Article ; schema:name ?title ; schema:mentions ?entity .
-  ?entity schema:name ?entityName .
-  FILTER(CONTAINS(LCASE(STR(?entityName)), "search term"))
-} LIMIT 100
-```
-
-Find connections between entities:
-```sparql
-PREFIX schema: <https://schema.org/>
-SELECT ?subject ?predicate ?object WHERE {
-  ?subject ?predicate ?object .
-  FILTER(?predicate != rdf:type)
-} LIMIT 50
-```
-
-Find entities by type:
-```sparql
-PREFIX schema: <https://schema.org/>
-SELECT ?entity ?name WHERE {
-  ?entity a schema:Person ; schema:name ?name .
-} LIMIT 100
-```
-
-#### Execute SPARQL
-
-Run the query against local `.ttl` files using the `execute-sparql.cs` file-based
-app included in this skill's `scripts/` directory:
+If graph files exceed ~100KB total, generate a SPARQL query and execute it with
+the included dotNetRDF script. See `references/schema-reference.md` for the full
+vocabulary and SPARQL patterns.
 
 ```powershell
 dotnet run scripts/execute-sparql.cs -- "<graph-directory>" "<sparql-query>"
 ```
 
-The script loads all `.ttl` files from the directory into an in-memory triple
-store, executes the SPARQL query, and outputs results as JSON to stdout.
-
-If the query has a syntax error, read the error message, fix the SPARQL, and
-re-execute. This retry loop is expected — SPARQL syntax can be tricky.
-
-**Checkpoint:** SPARQL results received as JSON.
-
-### Step 3: Interpret and present results
-
-Read the query results (whether from direct file reading or SPARQL execution)
-and present them conversationally:
-
-- Summarize the findings in natural language
-- Include counts where relevant ("Found 12 entities of type Person")
-- Offer follow-up suggestions ("Would you like to see which articles mention these entities?")
-- If results are empty, suggest broadening the search or checking entity names
+Use only `SELECT` or `ASK` queries. Include `LIMIT` clauses. Match names
+case-insensitively: `FILTER(CONTAINS(LCASE(STR(?name)), "search term"))`.
 
 ## Validation
 
-- [ ] User's question is answered with specific data from the graph
-- [ ] Entity names and types are accurate (match what's in the graph files)
-- [ ] If SPARQL was used, the query is syntactically valid and uses only documented predicates
-
-## Common Pitfalls
-
-| Trap | Solution |
-|------|----------|
-| Graph files don't exist yet | Direct user to `build-markdown-kg` skill first |
-| SPARQL uses predicates not in the ontology | Stick to the schema reference above; use `kb:relatedTo` as fallback |
-| Case-sensitive name matching returns no results | Always use `FILTER(CONTAINS(LCASE(STR(?name)), "..."))` |
-| JSON-LD `@context` uses relative paths | Resolve relative to the file location when reading |
-| Turtle file has syntax errors | Validate with dotNetRDF before querying; check for unescaped quotes |
+- [ ] User's question answered with specific data from the graph files
+- [ ] All stated facts match the actual graph content
+- [ ] No invented entities or relationships
