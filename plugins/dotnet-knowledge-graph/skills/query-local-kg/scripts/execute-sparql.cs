@@ -6,12 +6,13 @@
 // Example: dotnet run execute-sparql.cs -- ./graph/articles "PREFIX schema: <https://schema.org/> SELECT ?name WHERE { ?e schema:name ?name }"
 
 #:package dotNetRdf@3.5.1
-#:package System.Text.Json@9.0.4
+#:property PublishAot=false
 
 using System.Text.Json;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
+using VDS.RDF.Query.Datasets;
 using VDS.RDF.Writing;
 
 if (args.Length < 2)
@@ -66,7 +67,11 @@ Console.Error.WriteLine($"Loaded {store.Triples.Count()} triples from {ttlFiles.
 // Execute SPARQL
 try
 {
-    var results = store.ExecuteQuery(sparql);
+    var parser = new SparqlQueryParser();
+    var query = parser.ParseFromString(sparql);
+    var dataset = new InMemoryDataset(store);
+    var processor = new LeviathanQueryProcessor(dataset);
+    var results = processor.ProcessQuery(query);
 
     if (results is SparqlResultSet resultSet)
     {

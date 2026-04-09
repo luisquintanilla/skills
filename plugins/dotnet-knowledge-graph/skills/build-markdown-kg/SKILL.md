@@ -184,6 +184,82 @@ entity extraction guidelines below.
 
 **Checkpoint:** JSON-LD files written to `<output-dir>/articles/`.
 
+### Worked Example: Extracting from a Real SKILL.md
+
+**Input** — `plugins/dotnet/skills/csharp-scripts/SKILL.md` (abbreviated):
+
+```markdown
+---
+name: csharp-scripts
+description: Run single-file C# programs as scripts (file-based apps)...
+---
+# C# Scripts
+## When to Use
+- Testing a C# concept, API, or language feature with a quick one-file program
+## Workflow
+### Step 1: Check the .NET SDK version
+Run `dotnet --version`... File-based apps require .NET 10 or later.
+### Step 4: Add directives (if needed)
+#### `#:package` — NuGet package references
+#### `#:property` — MSBuild properties
+## Source-generated JSON
+File-based apps enable native AOT by default...
+```
+
+**Extracted Turtle output:**
+
+```turtle
+@prefix schema: <https://schema.org/> .
+@prefix kb: <urn:dotnet-skills:vocab:kb#> .
+
+<urn:skill:csharp-scripts> a schema:Article ;
+  schema:name "csharp-scripts" ;
+  schema:description "Run single-file C# programs as scripts (file-based apps)" ;
+  schema:isPartOf <urn:plugin:dotnet> ;
+  schema:about <urn:tech:file-based-apps> ;
+  schema:mentions <urn:tech:csharp> ,
+    <urn:tech:dotnet-sdk> ,
+    <urn:tech:nuget> ,
+    <urn:tech:msbuild> ,
+    <urn:tech:native-aot> .
+
+<urn:tech:csharp> a schema:SoftwareApplication ;
+  schema:name "C#" ;
+  schema:sameAs <https://www.wikidata.org/entity/Q2370> .
+
+<urn:tech:dotnet-sdk> a schema:SoftwareApplication ;
+  schema:name ".NET SDK" ;
+  schema:sameAs <https://www.wikidata.org/entity/Q5765967> .
+
+<urn:tech:file-based-apps> a schema:Thing ;
+  schema:name "file-based apps" ;
+  schema:description ".NET 10 feature for running single .cs files without a project" .
+
+<urn:tech:nuget> a schema:SoftwareApplication ;
+  schema:name "NuGet" ;
+  schema:sameAs <https://www.wikidata.org/entity/Q7070920> .
+
+<urn:tech:msbuild> a schema:SoftwareApplication ;
+  schema:name "MSBuild" ;
+  schema:sameAs <https://www.wikidata.org/entity/Q2784326> .
+
+<urn:tech:native-aot> a schema:Thing ;
+  schema:name "Native AOT" ;
+  schema:description "Ahead-of-time compilation for .NET applications" .
+
+<urn:plugin:dotnet> a kb:Plugin ;
+  schema:name "dotnet" ;
+  schema:hasPart <urn:skill:csharp-scripts> .
+```
+
+**Key extraction decisions shown:**
+- The skill document itself becomes a `schema:Article` node
+- Technologies are `schema:SoftwareApplication`; concepts are `schema:Thing`
+- `schema:about` = primary topic; `schema:mentions` = all other entities
+- `schema:isPartOf` / `schema:hasPart` encode the plugin→skill hierarchy
+- Well-known entities get `schema:sameAs` Wikidata links
+- URN scheme: `urn:skill:`, `urn:tech:`, `urn:plugin:` for local identifiers
+
 ### Step 4: Generate Turtle output
 
 For each JSON-LD file, also produce a Turtle (`.ttl`) file. Turtle is more

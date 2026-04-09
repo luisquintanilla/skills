@@ -1,0 +1,203 @@
+## Knowledge Graph — Extracted from dotnet/skills Repository
+##
+## Source SKILL.md files:
+##   plugins/dotnet-test/skills/run-tests/SKILL.md
+##   plugins/dotnet-msbuild/skills/build-perf-diagnostics/SKILL.md
+##   plugins/dotnet/skills/csharp-scripts/SKILL.md
+##
+## Extraction method: Copilot CLI following build-markdown-kg skill guidelines
+## Date: 2025-07-25
+
+@prefix schema: <https://schema.org/> .
+@prefix kb: <urn:dotnet-skills:vocab:kb#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# ─── Plugins ────────────────────────────────────────────────────────────
+
+<urn:plugin:dotnet-test> a kb:Plugin ;
+  schema:name "dotnet-test" ;
+  schema:description "Skills for running and managing .NET tests" ;
+  schema:hasPart <urn:skill:run-tests> ;
+  schema:creator <urn:org:microsoft> .
+
+<urn:plugin:dotnet-msbuild> a kb:Plugin ;
+  schema:name "dotnet-msbuild" ;
+  schema:description "Skills for MSBuild build system diagnostics and optimization" ;
+  schema:hasPart <urn:skill:build-perf-diagnostics> ;
+  schema:creator <urn:org:microsoft> .
+
+<urn:plugin:dotnet> a kb:Plugin ;
+  schema:name "dotnet" ;
+  schema:description "Core .NET SDK skills" ;
+  schema:hasPart <urn:skill:csharp-scripts> ;
+  schema:creator <urn:org:microsoft> .
+
+# ─── Skills (extracted as Articles) ─────────────────────────────────────
+
+<urn:skill:run-tests> a schema:Article ;
+  schema:name "run-tests" ;
+  schema:description "Runs .NET tests with dotnet test. Covers MSTest, xUnit, NUnit, and TUnit across VSTest and MTP platforms." ;
+  schema:isPartOf <urn:plugin:dotnet-test> ;
+  schema:about <urn:tech:dotnet-test> ;
+  schema:mentions <urn:tech:mstest> ,
+    <urn:tech:xunit> ,
+    <urn:tech:nunit> ,
+    <urn:tech:tunit> ,
+    <urn:tech:vstest> ,
+    <urn:tech:mtp> ,
+    <urn:tech:dotnet-test> ;
+  kb:relatedTo <urn:skill:migrate-vstest-to-mtp> ,
+    <urn:skill:mtp-hot-reload> ,
+    <urn:skill:writing-mstest-tests> .
+
+<urn:skill:build-perf-diagnostics> a schema:Article ;
+  schema:name "build-perf-diagnostics" ;
+  schema:description "Diagnose MSBuild build performance bottlenecks using binary log analysis. Covers timeline analysis, performance summaries, and 7 common bottleneck categories." ;
+  schema:isPartOf <urn:plugin:dotnet-msbuild> ;
+  schema:about <urn:tech:msbuild> ;
+  schema:mentions <urn:tech:msbuild> ,
+    <urn:tech:binlog> ,
+    <urn:tech:roslyn> ,
+    <urn:tech:resolve-assembly-reference> ;
+  kb:relatedTo <urn:skill:build-perf-baseline> ,
+    <urn:skill:incremental-build> ,
+    <urn:skill:build-parallelism> .
+
+<urn:skill:csharp-scripts> a schema:Article ;
+  schema:name "csharp-scripts" ;
+  schema:description "Run single-file C# programs as scripts (file-based apps) for quick experimentation, prototyping, and concept testing." ;
+  schema:isPartOf <urn:plugin:dotnet> ;
+  schema:about <urn:tech:file-based-apps> ;
+  schema:mentions <urn:tech:csharp> ,
+    <urn:tech:dotnet-sdk> ,
+    <urn:tech:nuget> ,
+    <urn:tech:msbuild> ,
+    <urn:tech:native-aot> ,
+    <urn:tech:file-based-apps> .
+
+# ─── Related skills (referenced but not yet extracted) ──────────────────
+
+<urn:skill:migrate-vstest-to-mtp> a schema:Article ;
+  schema:name "migrate-vstest-to-mtp" ;
+  schema:description "Migrate from VSTest to Microsoft.Testing.Platform" ;
+  schema:isPartOf <urn:plugin:dotnet-test> .
+
+<urn:skill:mtp-hot-reload> a schema:Article ;
+  schema:name "mtp-hot-reload" ;
+  schema:description "Hot reload for tests on Microsoft.Testing.Platform" ;
+  schema:isPartOf <urn:plugin:dotnet-test> .
+
+<urn:skill:writing-mstest-tests> a schema:Article ;
+  schema:name "writing-mstest-tests" ;
+  schema:description "Write and generate MSTest test code" ;
+  schema:isPartOf <urn:plugin:dotnet-test> .
+
+<urn:skill:build-perf-baseline> a schema:Article ;
+  schema:name "build-perf-baseline" ;
+  schema:description "Establish initial build performance measurements" ;
+  schema:isPartOf <urn:plugin:dotnet-msbuild> ;
+  kb:relatedTo <urn:skill:build-perf-diagnostics> .
+
+<urn:skill:incremental-build> a schema:Article ;
+  schema:name "incremental-build" ;
+  schema:description "Fix and optimize MSBuild incremental build behavior" ;
+  schema:isPartOf <urn:plugin:dotnet-msbuild> .
+
+<urn:skill:build-parallelism> a schema:Article ;
+  schema:name "build-parallelism" ;
+  schema:description "Tune MSBuild parallel build node utilization" ;
+  schema:isPartOf <urn:plugin:dotnet-msbuild> .
+
+# ─── Technologies ───────────────────────────────────────────────────────
+
+<urn:tech:dotnet-test> a schema:SoftwareApplication ;
+  schema:name "dotnet test" ;
+  schema:description "CLI command for running .NET tests" ;
+  schema:sameAs <https://www.wikidata.org/entity/Q5765967> .
+
+<urn:tech:mstest> a schema:SoftwareApplication ;
+  schema:name "MSTest" ;
+  schema:description "Microsoft's .NET testing framework" ;
+  schema:creator <urn:org:microsoft> ;
+  schema:sameAs <https://www.wikidata.org/entity/Q66747657> .
+
+<urn:tech:xunit> a schema:SoftwareApplication ;
+  schema:name "xUnit" ;
+  schema:description "Open-source unit testing framework for .NET" ;
+  schema:sameAs <https://www.wikidata.org/entity/Q86437> .
+
+<urn:tech:nunit> a schema:SoftwareApplication ;
+  schema:name "NUnit" ;
+  schema:description "Open-source unit testing framework for .NET" ;
+  schema:sameAs <https://www.wikidata.org/entity/Q15138476> .
+
+<urn:tech:tunit> a schema:SoftwareApplication ;
+  schema:name "TUnit" ;
+  schema:description "Modern .NET testing framework built on Microsoft.Testing.Platform" .
+
+<urn:tech:vstest> a schema:SoftwareApplication ;
+  schema:name "VSTest" ;
+  schema:description "Visual Studio Test Platform — legacy test runner for .NET" ;
+  schema:creator <urn:org:microsoft> .
+
+<urn:tech:mtp> a schema:SoftwareApplication ;
+  schema:name "Microsoft.Testing.Platform" ;
+  schema:description "Next-generation .NET test runner platform replacing VSTest" ;
+  schema:creator <urn:org:microsoft> ;
+  kb:relatedTo <urn:tech:vstest> .
+
+<urn:tech:msbuild> a schema:SoftwareApplication ;
+  schema:name "MSBuild" ;
+  schema:description "Microsoft Build Engine — the build platform for .NET" ;
+  schema:creator <urn:org:microsoft> ;
+  schema:sameAs <https://www.wikidata.org/entity/Q2784326> .
+
+<urn:tech:binlog> a schema:Thing ;
+  schema:name "Binary Log (binlog)" ;
+  schema:description "MSBuild binary log format for build analysis and replay" ;
+  kb:relatedTo <urn:tech:msbuild> .
+
+<urn:tech:roslyn> a schema:SoftwareApplication ;
+  schema:name "Roslyn" ;
+  schema:description ".NET Compiler Platform — C# and VB.NET compilers with analyzers and source generators" ;
+  schema:creator <urn:org:microsoft> ;
+  schema:sameAs <https://www.wikidata.org/entity/Q18628492> .
+
+<urn:tech:resolve-assembly-reference> a schema:Thing ;
+  schema:name "ResolveAssemblyReference (RAR)" ;
+  schema:description "MSBuild target that resolves assembly references — common performance bottleneck" ;
+  kb:relatedTo <urn:tech:msbuild> .
+
+<urn:tech:csharp> a schema:SoftwareApplication ;
+  schema:name "C#" ;
+  schema:description "Modern object-oriented programming language for .NET" ;
+  schema:creator <urn:org:microsoft> ;
+  schema:sameAs <https://www.wikidata.org/entity/Q2370> .
+
+<urn:tech:dotnet-sdk> a schema:SoftwareApplication ;
+  schema:name ".NET SDK" ;
+  schema:description "Software development kit for building .NET applications" ;
+  schema:creator <urn:org:microsoft> ;
+  schema:sameAs <https://www.wikidata.org/entity/Q5765967> .
+
+<urn:tech:nuget> a schema:SoftwareApplication ;
+  schema:name "NuGet" ;
+  schema:description "Package manager for .NET" ;
+  schema:creator <urn:org:microsoft> ;
+  schema:sameAs <https://www.wikidata.org/entity/Q7070920> .
+
+<urn:tech:native-aot> a schema:Thing ;
+  schema:name "Native AOT" ;
+  schema:description "Ahead-of-time compilation for .NET — produces native executables without runtime JIT" .
+
+<urn:tech:file-based-apps> a schema:Thing ;
+  schema:name "file-based apps" ;
+  schema:description ".NET 10 feature for running single .cs files without creating a project" ;
+  kb:relatedTo <urn:tech:dotnet-sdk> ,
+    <urn:tech:csharp> .
+
+# ─── Organizations ──────────────────────────────────────────────────────
+
+<urn:org:microsoft> a schema:Organization ;
+  schema:name "Microsoft" ;
+  schema:sameAs <https://www.wikidata.org/entity/Q2283> .
